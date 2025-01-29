@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -102,7 +102,7 @@ vim.g.have_nerd_font = false
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -114,9 +114,9 @@ vim.opt.showmode = false
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.schedule(function()
-  vim.opt.clipboard = 'unnamedplus'
-end)
+-- vim.schedule(function()
+--   vim.opt.clipboard = 'unnamedplus'
+-- end)
 
 -- Enable break indent
 vim.opt.breakindent = true
@@ -362,6 +362,15 @@ require('lazy').setup({
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      {
+        'lervag/vimtex',
+        lazy = false, -- we don't want to lazy load VimTeX
+        -- tag = "v2.15", -- uncomment to pin to a specific release
+        init = function()
+          -- VimTeX configuration goes here, e.g.
+          vim.g.vimtex_view_method = 'zathura'
+        end,
+      },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -418,6 +427,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -625,6 +635,7 @@ require('lazy').setup({
         clangd = {},
         -- gopls = {},
         pyright = {},
+        ltex = { settings = { ltex = { language = 'en-GB' } } },
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -941,6 +952,34 @@ require('lazy').setup({
     opts = {
       lsp = {},
       mappings = true,
+      infoview = {
+        -- Automatically open an infoview on entering a Lean buffer?
+        -- Should be a function that will be called anytime a new Lean file
+        -- is opened. Return true to open an infoview, otherwise false.
+        -- Setting this to `true` is the same as `function() return true end`,
+        -- i.e. autoopen for any Lean file, or setting it to `false` is the
+        -- same as `function() return false end`, i.e. never autoopen.
+        autoopen = true,
+
+        -- Set infoview windows' starting dimensions.
+        -- Windows are opened horizontally or vertically depending on spacing.
+        width = 60,
+        height = 9,
+
+        -- Put the infoview on the top or bottom when horizontal?
+        -- top | bottom
+        horizontal_position = 'bottom',
+
+        -- Always open the infoview window in a separate tabpage.
+        -- Might be useful if you are using a screen reader and don't want too
+        -- many dynamic updates in the terminal at the same time.
+        -- Note that `height` and `width` will be ignored in this case.
+        separate_tab = false,
+
+        -- Show indicators for pin locations when entering an infoview window?
+        -- always | never | auto (= only when there are multiple pins)
+        indicators = 'auto',
+      },
     },
   },
 
